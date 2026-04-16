@@ -4,28 +4,30 @@ main.py
 Tkinter UI for the Video → Sharp Frames → COLMAP pipeline.
 """
 
+import sys
 import shutil
 import threading
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 from pathlib import Path
 
-from frame_selection import run_frame_selection
-from frame_to_colmap import run_colmap_export
 
 # ─── Resolve bundled assets (works both in dev and PyInstaller builds) ────────
-import os
 
 def _get_base_dir() -> Path:
     """Return the base directory for bundled data files."""
     if getattr(sys, "frozen", False):
-        # Running as a PyInstaller bundle
         return Path(sys._MEIPASS)
     return Path(__file__).resolve().parent
 
 BASE_DIR = _get_base_dir()
 DEFAULT_EXPORT_CONFIG = BASE_DIR / "export_config.xml"
-BUNDLED_FFMPEG = BASE_DIR / "ffmpeg" / "ffmpeg.exe"
+
+
+# ─── Import pipeline modules ──────────────────────────────────────────────────
+
+from frame_selection import run_frame_selection
+from frame_to_colmap import run_colmap_export
 
 
 class PipelineApp(tk.Tk):
@@ -180,14 +182,6 @@ class PipelineApp(tk.Tk):
 
     # ── Pipeline execution ────────────────────────────────────────────────
 
-    def _set_status(self, msg, color="gray"):
-        self.status_var.set(msg)
-        for w in self.winfo_children():
-            pass  # status label color updated below
-        # Find the status label and update color
-        self.after(0, lambda: None)  # ensure we're on main thread
-        self.status_var.set(msg)
-
     def _validate(self) -> bool:
         if not self.input_video_var.get():
             messagebox.showerror("Missing field", "Please select an input video.")
@@ -210,6 +204,13 @@ class PipelineApp(tk.Tk):
         if not Path(self.config_var.get()).exists():
             messagebox.showerror("Not found", "Export config XML does not exist.")
             return False
+        if shutil.which("ffmpeg") is None:
+            messagebox.showerror(
+                "FFmpeg not found",
+                "ffmpeg was not found on your system PATH.\n\n"
+                "Please install FFmpeg and ensure it is accessible from the command line.",
+            )
+            return False
         return True
 
     def _run_pipeline(self):
@@ -227,12 +228,6 @@ class PipelineApp(tk.Tk):
         thread.start()
 
     def _pipeline_worker(self):
-        # Ensure bundled FFmpeg is on PATH so sharp-frames can find it
-        if BUNDLED_FFMPEG.exists():
-            ffmpeg_dir = str(BUNDLED_FFMPEG.parent)
-            if ffmpeg_dir not in os.environ.get("PATH", ""):
-                os.environ["PATH"] = ffmpeg_dir + os.pathsep + os.environ.get("PATH", "")
-
         input_video = self.input_video_var.get()
         output_dir = self.output_dir_var.get()
         rs_exe = self.rs_exe_var.get()
