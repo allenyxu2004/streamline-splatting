@@ -23,6 +23,9 @@ def _get_base_dir() -> Path:
 BASE_DIR = _get_base_dir()
 DEFAULT_EXPORT_CONFIG = BASE_DIR / "export_config.xml"
 
+_RS_DEFAULT = Path(r"C:\Program Files\Epic Games\RealityScan_2.1\RealityScan.exe")
+DEFAULT_RS_EXE = str(_RS_DEFAULT) if _RS_DEFAULT.exists() else ""
+
 
 # ─── Import pipeline modules ──────────────────────────────────────────────────
 
@@ -50,7 +53,7 @@ class PipelineApp(tk.Tk):
 
         self.input_video_var = tk.StringVar()
         self.output_dir_var = tk.StringVar()
-        self.rs_exe_var = tk.StringVar()
+        self.rs_exe_var = tk.StringVar(value=DEFAULT_RS_EXE)
         self.config_var = tk.StringVar(value=str(DEFAULT_EXPORT_CONFIG))
 
         self._path_row(path_frame, 0, "Input Video:", self.input_video_var, self._browse_video)
