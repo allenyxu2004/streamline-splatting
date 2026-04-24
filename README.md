@@ -36,3 +36,5 @@ Choose a **Selection Method** to control how the sharpest frames are picked:
 - `outlier-removal` — removes blurry outliers based on a sliding window
 
 Click **Run Pipeline**. The app will extract frames, run RealityScan alignment, and write the COLMAP output to your chosen output folder. Intermediate frames are cleaned up automatically when the pipeline finishes.
+
+Note: For the actual training process, I recommend using [Brush](https://github.com/ArthurBrussee/brush)
