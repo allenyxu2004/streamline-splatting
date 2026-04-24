@@ -9,7 +9,7 @@ Converts a video file into COLMAP-format camera registration data by extracting 
 
 ## Setup
 
-1. Extract `dist.zip` to a location of your choice.
+1. Download an extract `VideoToColmap.zip` under releases to a location of your choice.
 2. Open the extracted `VideoToColmap` folder and run `VideoToColmap.exe`.
 
 ## Usage
