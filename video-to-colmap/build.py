@@ -1,19 +1,6 @@
 #!/usr/bin/env python3
 """
-build.py
 Automates the PyInstaller build for the Video→COLMAP pipeline.
-
-Prerequisites:
-  pip install pyinstaller sharp-frames
-  FFmpeg must be installed and available on the system PATH.
-
-Project layout expected:
-  project/
-  ├── build.py              ← this file
-  ├── main.py
-  ├── frame_selection.py
-  ├── frame_to_colmap.py
-  └── export_config.xml
 """
 
 import subprocess
@@ -31,7 +18,7 @@ def check_prerequisites():
     if not (SCRIPT_DIR / "export_config.xml").exists():
         errors.append("export_config.xml not found in project root.")
 
-    # Check sharp-frames is importable (needed so PyInstaller can find it)
+    # Check sharp-frames is imported
     try:
         import sharp_frames  # noqa: F401
     except ImportError:

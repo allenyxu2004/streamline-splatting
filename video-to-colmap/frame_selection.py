@@ -2,7 +2,6 @@
 """
 frame_selection.py
 Extracts sharp frames from a video using the sharp-frames Python API.
-Requires: pip install sharp-frames, FFmpeg on PATH
 """
 
 import sys
